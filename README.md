@@ -15,7 +15,7 @@
 ## 07-23, 07-24 · HTML, CSS, JavaScript
 - `index.html`, `style.css`, `app.js` — "중고차 목록 관리" CRUD 실습 과제 (P231). 차량 정보를 등록·조회·수정·삭제하는 폼 기반 웹 페이지
 
-## 07-27 ~ 07-31 · 스마트 데이터 이해 및 활용 (PostgreSQL)
+## 07-27 ~ 07-30 · 스마트 데이터 이해 및 활용 (PostgreSQL)
 - `day01_쿼리_임유리.sql` — day01 실습 쿼리 제출본
 - `day02_쿼리_임유리.sql` — day02 실습 쿼리 제출본
 - `day02_캡쳐_임유리.pdf` — day02 실행 결과 캡쳐
