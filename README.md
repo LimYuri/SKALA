@@ -21,3 +21,6 @@
 - `day02_캡쳐_임유리.pdf` — day02 실행 결과 캡쳐
 - `day03_쿼리_임유리.sql` — day03 인덱스 튜닝 10문제 (EXPLAIN ANALYZE 기반 개선 전/후 비교, 검증 완료본)
 - `day04_쿼리_임유리_final.sql` — day04 프로시저/함수 8문제 최종본 (PostgreSQL 18 재실행 검증 완료, 선행 스키마 파일과 함께 실행 필요)
+
+## 07-31 ~ 08-05 · Front-framework: Vue.js
+- Vue 3(Composition API) + Vue Router + Pinia + Axios 기반 실시간 날씨 대시보드. 국내 지역 날씨 조회/비교, 전국 지도, 병원·약국·관광정보 "생활 정보" 탭 포함. API 키(.env)는 보안상 제외하고 제출.
