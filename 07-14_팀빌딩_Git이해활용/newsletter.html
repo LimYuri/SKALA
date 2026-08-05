@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SKALA 뉴스레터</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4f7ff;
+        --card: #ffffff;
+        --text: #14213d;
+        --muted: #5e6b85;
+        --accent: #4f46e5;
+        --accent-2: #06b6d4;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Pretendard", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #eef4ff 0%, #f9fbff 100%);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        width: min(1000px, calc(100% - 2rem));
+        margin: 0 auto;
+      }
+
+      .hero {
+        padding: 4rem 0 2rem;
+      }
+
+      .hero-card {
+        background: var(--card);
+        border-radius: 26px;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(20, 33, 61, 0.07);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(79, 70, 229, 0.1);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 3.4vw, 2.8rem);
+        margin: 0 0 0.8rem;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin: 0 0 1.2rem;
+        font-size: 1rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.8rem 1.2rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        color: white;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--text);
+        border: 1px solid #dfe7f7;
+      }
+
+      .section {
+        padding: 1.2rem 0 2rem;
+      }
+
+      .section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.7rem;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        background: var(--card);
+        padding: 1.25rem;
+        border-radius: 18px;
+        border: 1px solid #e8eefc;
+        box-shadow: 0 8px 25px rgba(20, 33, 61, 0.04);
+      }
+
+      .card h3 {
+        margin-top: 0;
+        margin-bottom: 0.4rem;
+      }
+
+      .card p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .signup {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        margin-top: 1rem;
+      }
+
+      .signup input {
+        flex: 1;
+        min-width: 240px;
+        padding: 0.8rem 1rem;
+        border: 1px solid #dfe7f7;
+        border-radius: 999px;
+        font-size: 1rem;
+      }
+
+      .signup button {
+        border: 0;
+        padding: 0.8rem 1.1rem;
+        border-radius: 999px;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+      }
+
+      @media (max-width: 800px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <div class="hero-card">
+          <span class="pill">SKALA 뉴스레터</span>
+          <h1>매주 한 번, 더 스마트한 인사이트를 전달합니다.</h1>
+          <p>
+            서비스 기획, 사용자 경험, 그리고 지속 가능한 성장에 대한 이야기를
+            짧고 명확하게 정리해 드립니다.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="index.html">홈으로 돌아가기</a>
+            <a class="btn btn-secondary" href="mailto:hello@skala.example">문의하기</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section">
+        <div class="container">
+          <h2>이번 호 주요 내용</h2>
+          <div class="cards">
+            <article class="card">
+              <h3>디자인과 데이터의 균형</h3>
+              <p>사용자 경험을 높이기 위해 어떤 데이터를 먼저 확인해야 하는지 소개합니다.</p>
+            </article>
+            <article class="card">
+              <h3>작은 개선이 만드는 변화</h3>
+              <p>큰 기능보다 먼저 다듬으면 좋은 경험이 생기는 이유를 공유합니다.</p>
+            </article>
+            <article class="card">
+              <h3>다음 프로젝트를 위한 질문</h3>
+              <p>새로운 아이디어를 시작할 때 꼭 확인해 보면 좋은 체크리스트를 정리했습니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2>뉴스레터 구독하기</h2>
+          <p>새로운 이슈가 발행될 때마다 가장 먼저 받아보고 싶다면 아래에 이메일을 남겨주세요.</p>
+          <form class="signup">
+            <input type="email" placeholder="이메일 주소를 입력하세요" />
+            <button type="submit">구독 신청</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
