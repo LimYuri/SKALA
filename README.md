@@ -61,7 +61,9 @@ Vue 3(Composition API) + Vue Router + Pinia + Axios 기반 실시간 날씨 대�
 - `router/index.js` — 위 views를 경로에 연결하는 라우트 정의
 - `App.vue`, `main.js` — 앱 진입점 및 루트 레이아웃
 
-## 08-06 · Day 1 종합실습 (Python 데이터 파이프라인)
+## 08-06 ~ 08-07 · Python 데이터 분석 및 AI 모델링
+
+### Day 1 종합실습 (Python 데이터 파이프라인)
 Open-Meteo(서울 3일 시간대별 기온·강수확률), Countries.dev(대한민국 국가 정보), ip-api(IP 위치 정보) 3개 API를 `httpx` + `asyncio.gather()`로 동시에 수집하고, Pydantic v2로 타입·범위를 검증한 뒤 CSV/Parquet로 저장하며 성능을 비교하는 파이프라인.
 
 - `app/config.py` — API 주소·타임아웃·저장 경로 설정
@@ -76,7 +78,10 @@ Open-Meteo(서울 3일 시간대별 기온·강수확률), Countries.dev(대한�
 - `data/output/raw_api_snapshot.json` — 3개 API 원본 응답 스냅샷
 - `판교_7반_임유리_day1종합실습_실행결과.pdf` — 실행 결과 보고서 (프로젝트 개요/실행결과/성능비교/테스트·git 이력/전체 코드/본인 소감 포함)
 
-**practice/** (같은 날 진행한 개별 실습)
+### practice/ (같은 수업에서 진행한 개별 실습)
 - `practice1.py` — [심화 실습 1] 자료구조 집계·컴프리헨션·제너레이터. Sales 데이터를 리스트/딕셔너리 컴프리헨션으로 필터링·지역별 집계하고, Counter·defaultdict로 그룹화, 제너레이터로 메모리 사용량 비교, 월·카테고리 기준 상위 3개 조합 추출
 - `practice2.py` — [실습 2] 파일 I/O, 예외 처리, Pydantic 검증 파이프라인. Sales 데이터를 안전하게 읽어 Pydantic v2로 검증, 정상/오류 데이터를 CSV·JSON으로 분리 저장 후 재검증, ValidationError 예외 처리 시연 포함
   - (실행에 필요한 `Python_Practice1_Data.json`, `Python_Practice2_Data.json` 원본 데이터 파일은 별도로 받지 못해 포함되어 있지 않습니다)
+- `practice3.py` — [실습 3] Pandas EDA · Polars Lazy · DuckDB SQL 비교. sales_100k.csv(100만 행)를 region/category/amount 기준으로 정제(결측 22,860건 제거) 후 IQR 이상치 제거(956,363행 유지), 세 가지 방식으로 동일 집계를 구현해 결과 일치 여부(assert_frame_equal)와 실행 시간(timeit)을 비교 (Polars가 Pandas보다 약 15배 빠름을 확인)
+- `practice4.py` — [실습 4] 데이터 분석 및 AI 모델링 종합 실습. practice3이 저장한 정제 데이터를 입력으로 ① 2×2 EDA 대시보드(히스토그램+KDE, 박스플롯, 월별 라인, 상관 히트맵) ② t-test(서울 vs 부산)·카이제곱 독립성 검정 ③ ColumnTransformer+Ridge Pipeline 학습·평가·저장·재로딩 ④ Plotly Express 인터랙티브 막대 차트(.html) 저장까지 수행
+  - (practice3이 생성하는 `sales_100k_cleaned.csv`, `region_category_agg.csv` 입력 파일과 `sales_100k.csv` 원본은 포함되어 있지 않습니다)
