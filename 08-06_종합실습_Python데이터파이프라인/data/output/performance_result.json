@@ -1,0 +1,9 @@
+{
+  "rows": 72,
+  "csv_write_seconds": 0.001516,
+  "csv_read_seconds": 0.000824,
+  "csv_bytes": 6541,
+  "parquet_write_seconds": 0.004955,
+  "parquet_read_seconds": 0.005145,
+  "parquet_bytes": 7017
+}
