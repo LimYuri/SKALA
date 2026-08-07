@@ -75,3 +75,8 @@ Open-Meteo(서울 3일 시간대별 기온·강수확률), Countries.dev(대한�
 - `data/output/performance_result.json` — CSV/Parquet 쓰기·읽기 시간, 파일 크기 비교 결과
 - `data/output/raw_api_snapshot.json` — 3개 API 원본 응답 스냅샷
 - `판교_7반_임유리_day1종합실습_실행결과.pdf` — 실행 결과 보고서 (프로젝트 개요/실행결과/성능비교/테스트·git 이력/전체 코드/본인 소감 포함)
+
+**practice/** (같은 날 진행한 개별 실습)
+- `practice1.py` — [심화 실습 1] 자료구조 집계·컴프리헨션·제너레이터. Sales 데이터를 리스트/딕셔너리 컴프리헨션으로 필터링·지역별 집계하고, Counter·defaultdict로 그룹화, 제너레이터로 메모리 사용량 비교, 월·카테고리 기준 상위 3개 조합 추출
+- `practice2.py` — [실습 2] 파일 I/O, 예외 처리, Pydantic 검증 파이프라인. Sales 데이터를 안전하게 읽어 Pydantic v2로 검증, 정상/오류 데이터를 CSV·JSON으로 분리 저장 후 재검증, ValidationError 예외 처리 시연 포함
+  - (실행에 필요한 `Python_Practice1_Data.json`, `Python_Practice2_Data.json` 원본 데이터 파일은 별도로 받지 못해 포함되어 있지 않습니다)
