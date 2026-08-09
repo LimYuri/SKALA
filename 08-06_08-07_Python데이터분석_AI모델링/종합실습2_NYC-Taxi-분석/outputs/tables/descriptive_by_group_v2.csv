@@ -1,0 +1,3 @@
+analysis_group,total_amount_mean,total_amount_std,trip_distance_mean,trip_distance_std,speed_mph_mean,speed_mph_std,fare_per_mile_mean,fare_per_mile_std
+비출퇴근,26.367,16.499,2.648,3.089,9.713,5.833,15.698,25.204
+출퇴근,25.751,15.018,2.332,2.717,9.114,4.567,16.837,24.998

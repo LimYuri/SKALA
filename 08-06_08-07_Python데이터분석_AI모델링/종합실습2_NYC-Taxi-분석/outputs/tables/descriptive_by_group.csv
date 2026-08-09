@@ -1,0 +1,5 @@
+,trip_distance,trip_distance,trip_distance,trip_distance,trip_distance,trip_distance,trip_distance,trip_distance,total_amount,total_amount,total_amount,total_amount,total_amount,total_amount,total_amount,total_amount,trip_duration_minutes,trip_duration_minutes,trip_duration_minutes,trip_duration_minutes,trip_duration_minutes,trip_duration_minutes,trip_duration_minutes,trip_duration_minutes
+,count,mean,std,min,25%,50%,75%,max,count,mean,std,min,25%,50%,75%,max,count,mean,std,min,25%,50%,75%,max
+analysis_group,,,,,,,,,,,,,,,,,,,,,,,,
+비출퇴근,6007171.0,2.648771726325094,3.090577272772078,0.01,0.96,1.59,2.82,97.78,6007171.0,26.366272774655506,16.499756772456635,0.5,16.38,21.35,29.65,432.44,6007171.0,15.458888324193447,10.980040471764276,0.016666666666666666,7.85,12.716666666666667,20.0,299.6333333333333
+출퇴근,3061386.0,2.3323007618118066,2.7191125000600143,0.01,0.92,1.49,2.47,73.59,3061386.0,25.750410010367847,15.018510196692336,0.7,17.1,21.54,28.6,489.83,3061386.0,14.48803390033143,10.320770860659545,0.016666666666666666,7.45,11.9,18.533333333333335,297.43333333333334

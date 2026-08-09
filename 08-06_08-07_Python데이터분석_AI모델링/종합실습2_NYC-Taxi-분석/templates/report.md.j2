@@ -1,0 +1,110 @@
+# NYC Yellow Taxi End-to-End 최종 종합 분석 보고서
+
+> 이 문서는 최초 분석(v1)부터 시간대 밴드 재설계(v3)까지의 개선 과정을 종합해 Jinja2로 자동 생성한 최종 보고서입니다.
+
+- 생성 시각: `{{ generated_at }}`
+- 분석 기간: `2026-01 ~ 2026-05`
+- 대상: 평일·기본 요금제(`RatecodeID == 1`) 운행
+
+## 1. 데이터 준비 및 교차 검증
+
+- 분석용 원천 로딩 데이터: **{{ raw_rows | comma }}행, 선택 컬럼 {{ raw_columns }}개**
+- 정제 후 데이터: **{{ cleaned_rows | comma }}행, {{ cleaned_columns }}열**
+- 분석 그룹: 출퇴근 {{ group_counts.get('출퇴근', 0) | comma }}건 / 비출퇴근 {{ group_counts.get('비출퇴근', 0) | comma }}건
+- 정제 후 중복 행: **{{ remaining_duplicate_rows | comma }}건**
+
+### 정제 후 결측치
+
+{% if null_counts %}
+{% for column, count in null_counts.items() %}
+- `{{ column }}`: {{ count | comma }}건
+{% endfor %}
+{% else %}
+- 없음 (0건)
+{% endif %}
+
+### Pandas·Polars 결과 비교
+
+{% for check in comparison_checks %}
+- {{ 'Pass' if check.passed else 'Fail' }} — {{ check.label }}
+{% endfor %}
+
+**전체 정제 결과 비교: {{ 'Pass' if all_comparisons_passed else 'Fail' }}**
+
+## 2. 분석 개선 과정
+
+최초 가설의 결과가 통계적으로는 유의하지만 실질적으로 작게 나타나, 지표와 그룹 정의를 단계적으로 개선했습니다.
+
+| 단계 | 질문 | 개선 내용 | 핵심 결과 | 상세 보고서 |
+|---|---|---|---|---|
+{% for stage in analysis_stages %}
+| {{ stage.stage }} | {{ stage.question }} | {{ stage.improvement }} | {{ stage.key_result }} | [열기]({{ stage.report_path }}) |
+{% endfor %}
+
+v1~v3는 동일 데이터에서 가설과 그룹 정의를 발전시킨 **탐색적 분석 과정**입니다. 최종 헤드라인 검정은 시간대별 EDA에서 가장 뚜렷한 차이를 보인 낮과 심야를 비교합니다.
+
+## 3. 기술통계 및 상관분석
+
+### 전체 기술통계
+
+{{ descriptive_table }}
+
+### 상관행렬
+
+{{ correlation_table }}
+
+![상관관계 히트맵](outputs/figures/correlation_heatmap.png)
+
+## 4. 최종 분석 — 시간대 밴드 재설계(v3)
+
+출퇴근·비출퇴근 이분법에서는 심야와 낮 시간대가 하나의 비출퇴근 그룹에 함께 포함되어 평균 차이가 상쇄됐습니다. 이를 보완하기 위해 하루를 5개 시간대 밴드로 재구성했습니다.
+
+![시간대별 프로파일](outputs/figures/hourly_profile_v3.png)
+
+### 시간대 밴드별 기술통계
+
+{{ band_stats_table }}
+
+### Welch t-test: 낮(10~16시) vs 심야(0~6시)
+
+{{ ttest_table }}
+
+- 표본이 매우 크므로 p-value만으로 중요성을 판단하지 않고 Cohen's d와 변화율을 함께 해석했습니다.
+- `p-value < 0.001`은 통계적으로 유의함을 뜻하며, 인과관계를 의미하지는 않습니다.
+
+## 5. 머신러닝 Pipeline
+
+`trip_distance`, `trip_duration_minutes`, `pickup_hour`, `is_rush_hour`를 입력으로 사용해 `total_amount`를 예측했습니다.
+
+- 구성: `StandardScaler` + `LinearRegression`
+- 분할: 학습 80% / 평가 20%, `random_state=42`
+- 저장 모델: `models/total_amount_regression_pipeline.joblib`
+
+{{ model_table }}
+
+모델의 MAE는 ${{ model_mae }}이며, 개별 운행의 총요금 예측에서 평균 절대오차가 약 ${{ model_mae }}이라는 의미입니다. 이 모델은 시간대 효과를 정교하게 설명하기 위한 모델이 아니라 재현 가능한 기본 회귀 Pipeline입니다.
+
+## 6. 시각화 산출물
+
+{% for chart in charts %}
+- [{{ chart.title }}]({{ chart.path }})
+{% endfor %}
+
+## 7. 최종 해석과 한계
+
+### 핵심 결과
+
+{% for finding in final_findings %}
+- {{ finding }}
+{% endfor %}
+
+### 해석 시 주의점
+
+- v3의 낮·심야 비교는 시간대별 EDA 이후 선택한 탐색적 후속 분석입니다.
+- `fare_per_mile`은 기본요금·팁·통행료·할증과 짧은 운행의 영향을 함께 받으므로 정체의 순수한 인과효과로 해석할 수 없습니다.
+- 시간대별 차이는 운행 지역과 이동거리 구성의 영향도 받을 수 있습니다.
+- 회귀모델은 성능 확인을 위한 baseline이며 시간대의 비선형 패턴을 완전히 반영하지 않습니다.
+
+## 8. 결론
+
+시간대에 따라 총요금 자체보다 운행의 **구성**이 달라집니다. 낮에는 평균 속도와 이동거리가 낮고, 심야에는 더 빠르고 긴 운행이 나타납니다. 총요금의 실질적 차이는 작지만 거리·속도·단가를 분해하면 시간대별 운행 특성이 분명하게 드러납니다.

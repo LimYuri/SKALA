@@ -85,3 +85,22 @@ Open-Meteo(서울 3일 시간대별 기온·강수확률), Countries.dev(대한�
 - `practice3.py` — [실습 3] Pandas EDA · Polars Lazy · DuckDB SQL 비교. sales_100k.csv(100만 행)를 region/category/amount 기준으로 정제(결측 22,860건 제거) 후 IQR 이상치 제거(956,363행 유지), 세 가지 방식으로 동일 집계를 구현해 결과 일치 여부(assert_frame_equal)와 실행 시간(timeit)을 비교 (Polars가 Pandas보다 약 15배 빠름을 확인)
 - `practice4.py` — [실습 4] 데이터 분석 및 AI 모델링 종합 실습. practice3이 저장한 정제 데이터를 입력으로 ① 2×2 EDA 대시보드(히스토그램+KDE, 박스플롯, 월별 라인, 상관 히트맵) ② t-test(서울 vs 부산)·카이제곱 독립성 검정 ③ ColumnTransformer+Ridge Pipeline 학습·평가·저장·재로딩 ④ Plotly Express 인터랙티브 막대 차트(.html) 저장까지 수행
   - (practice3이 생성하는 `sales_100k_cleaned.csv`, `region_category_agg.csv` 입력 파일과 `sales_100k.csv` 원본은 포함되어 있지 않습니다)
+
+### 종합실습2_NYC-Taxi-분석 (Day 2 종합실습)
+NYC Yellow Taxi 운행 데이터를 Pandas·Polars로 정제하고(1899만 행 → 정제 906만 행) 시간대별 운행 특성을 통계적으로 분석한 뒤 sklearn Pipeline으로 총요금을 예측하는 End-to-End 프로젝트. 팀원: 임채현·임유리·김광현 (개인 제출본). 최초 분석(출퇴근 vs 비출퇴근 단순비교) → 1차 개선(Cohen's d 효과크기 추가) → 2차 개선(5개 시간대 밴드 분석)까지 3단계로 개선하며 진행. 회귀모델 성능: RMSE 4.132 · MAE 2.430 · R² 0.9333. 원천/정제 데이터(CSV 875MB, Parquet 136MB)는 용량 문제로 제외.
+
+- `main.py` — 전체 파이프라인 실행 진입점 (다운로드→전처리→분석→모델링→시각화→보고서 생성)
+- `scripts/01_download_data.py` — NYC TLC 원천 Parquet 다운로드
+- `scripts/02_preprocess.py` — Pandas·Polars 정제 및 교차 검증 (결측치/중복/자료형/평균·합계 비교)
+- `scripts/03_analysis.py` — 기술통계·상관분석·최초 Welch t-test
+- `scripts/04_model.py` — StandardScaler+LinearRegression sklearn Pipeline 학습·저장
+- `scripts/05_report.py`, `07_report_v2.py`, `09_report_v3.py` — 단계별(v1/v2/v3) 보고서 생성
+- `scripts/06_analysis_v2.py` — 속도·마일당 요금 분석, Cohen's d 효과크기 추가
+- `scripts/08_analysis_v3.py` — 5개 시간대 밴드(낮/심야 등) 분석
+- `scripts/10_plotly_chart.py` — Plotly Express 인터랙티브 시간대별 차트 생성
+- `scripts/11_report_jinja.py` — Jinja2 기반 최종 종합 보고서(`report.md`) 자동 생성
+- `outputs/figures/` — Seaborn 정적 시각화 PNG 5개 + Plotly 인터랙티브 HTML 1개
+- `outputs/tables/` — 기술통계·상관행렬·t-test·회귀 평가지표·Pandas/Polars 비교 결과 CSV/JSON
+- `models/total_amount_regression_pipeline.joblib` — 저장된 회귀 Pipeline 모델
+- `report.md`, `report_v1.md`, `report_v2.md`, `report_v3.md` — 단계별 분석 보고서
+- `판교_7반_임유리_day2종합실습_제출보고서.pdf` — 개인 제출 보고서 (팀 공통 분석 + 본인 기여 부분 포함)

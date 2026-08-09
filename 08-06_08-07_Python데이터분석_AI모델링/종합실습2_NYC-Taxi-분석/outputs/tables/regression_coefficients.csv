@@ -1,0 +1,6 @@
+feature,coefficient_scaled
+trip_distance,10.183223804708348
+trip_duration_minutes,6.389679438460644
+pickup_hour,0.553033154371207
+is_rush_hour,0.5192728484417197
+intercept,26.160960407837827

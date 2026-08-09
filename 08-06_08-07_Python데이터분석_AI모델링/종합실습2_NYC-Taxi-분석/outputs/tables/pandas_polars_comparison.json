@@ -1,0 +1,190 @@
+{
+  "comparison_scope": "raw_load_and_cleaned_result",
+  "pandas_raw_shape": [
+    18999282,
+    6
+  ],
+  "polars_raw_shape": [
+    18999282,
+    6
+  ],
+  "same_raw_shape": true,
+  "same_raw_columns": true,
+  "pandas_raw_null_counts": {
+    "tpep_pickup_datetime": 0,
+    "tpep_dropoff_datetime": 0,
+    "trip_distance": 0,
+    "total_amount": 0,
+    "RatecodeID": 4812280,
+    "passenger_count": 4812280
+  },
+  "polars_raw_null_counts": {
+    "tpep_pickup_datetime": 0,
+    "tpep_dropoff_datetime": 0,
+    "trip_distance": 0,
+    "total_amount": 0,
+    "RatecodeID": 4812280,
+    "passenger_count": 4812280
+  },
+  "same_raw_null_counts": true,
+  "pandas_cleaned_shape": [
+    9068557,
+    12
+  ],
+  "polars_cleaned_shape": [
+    9068557,
+    12
+  ],
+  "same_cleaned_shape": true,
+  "pandas_cleaned_columns": [
+    "tpep_pickup_datetime",
+    "tpep_dropoff_datetime",
+    "trip_distance",
+    "total_amount",
+    "RatecodeID",
+    "passenger_count",
+    "pickup_weekday",
+    "is_weekday",
+    "trip_duration_minutes",
+    "pickup_hour",
+    "is_rush_hour",
+    "analysis_group"
+  ],
+  "polars_cleaned_columns": [
+    "tpep_pickup_datetime",
+    "tpep_dropoff_datetime",
+    "trip_distance",
+    "total_amount",
+    "RatecodeID",
+    "passenger_count",
+    "pickup_weekday",
+    "is_weekday",
+    "trip_duration_minutes",
+    "pickup_hour",
+    "is_rush_hour",
+    "analysis_group"
+  ],
+  "same_cleaned_columns": true,
+  "pandas_cleaned_null_counts": {
+    "tpep_pickup_datetime": 0,
+    "tpep_dropoff_datetime": 0,
+    "trip_distance": 0,
+    "total_amount": 0,
+    "RatecodeID": 0,
+    "passenger_count": 0,
+    "pickup_weekday": 0,
+    "is_weekday": 0,
+    "trip_duration_minutes": 0,
+    "pickup_hour": 0,
+    "is_rush_hour": 0,
+    "analysis_group": 0
+  },
+  "polars_cleaned_null_counts": {
+    "tpep_pickup_datetime": 0,
+    "tpep_dropoff_datetime": 0,
+    "trip_distance": 0,
+    "total_amount": 0,
+    "RatecodeID": 0,
+    "passenger_count": 0,
+    "pickup_weekday": 0,
+    "is_weekday": 0,
+    "trip_duration_minutes": 0,
+    "pickup_hour": 0,
+    "is_rush_hour": 0,
+    "analysis_group": 0
+  },
+  "same_cleaned_null_counts": true,
+  "pandas_cleaned_dtypes": {
+    "tpep_pickup_datetime": "datetime",
+    "tpep_dropoff_datetime": "datetime",
+    "trip_distance": "float",
+    "total_amount": "float",
+    "RatecodeID": "float",
+    "passenger_count": "float",
+    "pickup_weekday": "integer",
+    "is_weekday": "boolean",
+    "trip_duration_minutes": "float",
+    "pickup_hour": "integer",
+    "is_rush_hour": "boolean",
+    "analysis_group": "string"
+  },
+  "polars_cleaned_dtypes": {
+    "tpep_pickup_datetime": "datetime",
+    "tpep_dropoff_datetime": "datetime",
+    "trip_distance": "float",
+    "total_amount": "float",
+    "RatecodeID": "float",
+    "passenger_count": "float",
+    "pickup_weekday": "integer",
+    "is_weekday": "boolean",
+    "trip_duration_minutes": "float",
+    "pickup_hour": "integer",
+    "is_rush_hour": "boolean",
+    "analysis_group": "string"
+  },
+  "same_cleaned_dtypes": true,
+  "cleaned_numeric_summary": {
+    "trip_distance": {
+      "pandas": {
+        "mean": 2.541936671953433,
+        "sum": 23051697.60000001
+      },
+      "polars": {
+        "mean": 2.541936671953432,
+        "sum": 23051697.6
+      },
+      "mean_close": true,
+      "sum_close": true
+    },
+    "total_amount": {
+      "pandas": {
+        "mean": 26.1583682927725,
+        "sum": 237218653.8900001
+      },
+      "polars": {
+        "mean": 26.158368292772487,
+        "sum": 237218653.89
+      },
+      "mean_close": true,
+      "sum_close": true
+    },
+    "passenger_count": {
+      "pandas": {
+        "mean": 1.2052996965228315,
+        "sum": 10930329.0
+      },
+      "polars": {
+        "mean": 1.2052996965228315,
+        "sum": 10930329.0
+      },
+      "mean_close": true,
+      "sum_close": true
+    },
+    "trip_duration_minutes": {
+      "pandas": {
+        "mean": 15.131144876007653,
+        "sum": 137217649.78333333
+      },
+      "polars": {
+        "mean": 15.131144876007653,
+        "sum": 137217649.78333333
+      },
+      "mean_close": true,
+      "sum_close": true
+    },
+    "pickup_hour": {
+      "pandas": {
+        "mean": 14.865937987708518,
+        "sum": 134812606.0
+      },
+      "polars": {
+        "mean": 14.865937987708518,
+        "sum": 134812606.0
+      },
+      "mean_close": true,
+      "sum_close": true
+    }
+  },
+  "same_cleaned_numeric_summary": true,
+  "all_cleaned_checks_passed": true
+}
