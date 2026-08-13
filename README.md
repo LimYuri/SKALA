@@ -106,7 +106,6 @@ NYC Yellow Taxi 운행 데이터를 Pandas·Polars로 정제하고(1899만 행 �
 - `판교_7반_임유리_day2종합실습_제출보고서.pdf` — 개인 제출 보고서 (팀 공통 분석 + 본인 기여 부분 포함)
 
 ## 08-10 ~ 08-14 · Java & Spring Boot
-Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 실습 코드. 강의자료 PDF 자체는 저작권 문제로 올리지 않고, 실습 중 작성한 코드만 정리했습니다. `01.training-code`는 직접 채워나간 실습 코드, `02.answer-code`는 비교용 정답 코드입니다.
 
 **01.java/** — Java 기초~심화 (1~3일차 오전)
 - `01.snippet` ~ `05.for` — 변수/자료형, 네이밍 규칙, 클래스와 객체, 제어문(if/switch/while/for)
