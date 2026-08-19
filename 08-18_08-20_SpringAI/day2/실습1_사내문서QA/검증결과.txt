@@ -1,0 +1,15 @@
+검증일: 2026-08-19 (Asia/Seoul)
+환경: Java 21.0.11, Gradle Wrapper 8.14.3
+기준 버전: Spring Boot 3.5.16, Spring AI 1.1.8
+
+실행 명령: ./gradlew clean test
+결과: BUILD SUCCESSFUL
+검증 범위: main/test 컴파일, 리소스 처리, 일반 단위 테스트
+추가 수정: source를 실제 파일명으로 통일하고 분할 완료 후 모든 청크에
+source/version 메타데이터를 재주입하여 재인제스트 삭제 조건과 저장값을 일치시킴
+
+미실행: ./gradlew test -Peval
+이유: OPENAI_API_KEY가 제공되지 않았으며 실제 임베딩/채팅 호출은 외부 API 비용이 발생함
+
+미검증: SpringAI 이해 및 활용_202608.pdf 페이지별 직접 대조
+이유: 현재 작업 공간에 원본 PDF 파일이 없음

@@ -135,7 +135,7 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 - `17.http-api-server` — HTTP API 서버 구현
 
 ## 08-18 ~ 08-20 · Spring AI
-"SpringAI 이해 및 활용" 과정. 강의자료 PDF(324p)는 저작권 문제로 올리지 않고, 실습 코드와 본인이 작성한 실행결과 보고서만 정리했습니다. 커리큘럼: Spring Boot 기초 계층 구조 → Spring AI 개요/아키텍처 → 개발환경 구성 → 의존성·설정과 ChatClient → 프롬프트·옵션·스트리밍 → 구조화 출력·멀티모달·임베딩 → LLM 활용 심화 → RAG(기본/심화) → Tool Calling·AI Agent·MCP → Tool·Agent 심화 → Advisors·메모리·운영 → 종합실습(HelpDesk AI). Day2, Day3 실습은 추후 추가 예정.
+"SpringAI 이해 및 활용" 과정. 강의자료 PDF(324p)는 저작권 문제로 올리지 않고, 실습 코드와 본인이 작성한 실행결과 보고서만 정리했습니다. 커리큘럼: Spring Boot 기초 계층 구조 → Spring AI 개요/아키텍처 → 개발환경 구성 → 의존성·설정과 ChatClient → 프롬프트·옵션·스트리밍 → 구조화 출력·멀티모달·임베딩 → LLM 활용 심화 → RAG(기본/심화) → Tool Calling·AI Agent·MCP → Tool·Agent 심화 → Advisors·메모리·운영 → 종합실습(HelpDesk AI). Day3 실습은 추후 추가 예정.
 
 ### day1/실습1_주문요약 (Spring AI ChatClient 기초)
 주문을 조회해 Spring AI `ChatClient`로 한 문장 요약을 생성하는 API. AI 호출 실패 시 주문 정보 기반 fallback 문장을 반환하고, 존재하지 않는 주문과 다른 사용자의 주문은 동일하게 404로 응답(권한 정보 노출 방지).
@@ -146,4 +146,19 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 - `src/main/java/com/skala/day1/web/OrderSummaryController.java` — 요약 API 엔드포인트 (`GET /lab1/orders/{orderId}/summary`)
 - `src/main/java/com/skala/day1/web/SummaryResponse.java`, `ErrorResponse.java`, `Lab1ExceptionHandler.java` — 응답 DTO 및 예외 처리
 - `SpringAI_Day01_실행결과_임유리.pdf` — 실행결과 보고서 (정상 요약 테스트 HTTP 200, 타 사용자 주문 조회 실패 테스트 HTTP 404 등 Swagger 테스트 결과)
+- API 키는 환경변수(`OPENAI_API_KEY`)로 주입, 코드에 하드코딩되어 있지 않음
+
+### day2/실습1_사내문서QA (RAG 기반 Q&A)
+사내 정책 문서 3개(반품/배송/멤버십)를 VectorStore에 저장하고, 질문과 관련된 문서를 검색해 검색된 근거만으로 답변하는 RAG API. 추측 답변 금지, 근거(sources)와 grounded 여부를 함께 반환.
+
+- `src/main/java/com/example/day2/lab2/Lab2AiConfig.java` — VectorStore/임베딩 모델 설정
+- `src/main/java/com/example/day2/lab2/Lab2IngestService.java` — 문서 읽기 → 청크 분할 → 임베딩 → VectorStore 저장 (기존 source는 재적재 전 삭제)
+- `src/main/java/com/example/day2/lab2/Lab2RetrievalService.java` — topK·threshold 기반 유사도 검색, score/source/snippet 반환
+- `src/main/java/com/example/day2/lab2/Lab2AnswerService.java` — 검색된 근거만 사용해 답변 생성
+- `src/main/java/com/example/day2/lab2/Lab2Controller.java` — API 엔드포인트 (`POST /lab2/ingest`, `GET /lab2/retrieve`, `POST /lab2/ask`)
+- `src/main/java/com/example/day2/lab2/Lab2Properties.java`, `AnswerDto.java`, `AskRequest.java`, `ChunkDto.java`, `IngestResult.java` — 설정값 및 요청/응답 DTO
+- `src/main/resources/lab2-docs/` — 사내 정책 원문 (반품/배송/멤버십)
+- `src/test/java/.../GoldenEvaluationTest.java`, `Lab2AnswerServiceTest.java`, `Lab2IngestServiceTest.java` — 골든셋 평가 포함 테스트
+- `요구사항_대조표_및_제출가이드.md`, `검증결과.txt` — 요구사항 대조 및 검증 기록
+- `SpringAI_Day2_실행결과_임유리.pdf` — 실행결과 보고서 (문서 인제스트, 검색, 근거 기반 답변 테스트 결과)
 - API 키는 환경변수(`OPENAI_API_KEY`)로 주입, 코드에 하드코딩되어 있지 않음
