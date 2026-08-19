@@ -137,7 +137,7 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 ## 08-18 ~ 08-20 · Spring AI
 "SpringAI 이해 및 활용" 과정. 강의자료 PDF(324p)는 저작권 문제로 올리지 않고, 실습 코드와 본인이 작성한 실행결과 보고서만 정리했습니다. 커리큘럼: Spring Boot 기초 계층 구조 → Spring AI 개요/아키텍처 → 개발환경 구성 → 의존성·설정과 ChatClient → 프롬프트·옵션·스트리밍 → 구조화 출력·멀티모달·임베딩 → LLM 활용 심화 → RAG(기본/심화) → Tool Calling·AI Agent·MCP → Tool·Agent 심화 → Advisors·메모리·운영 → 종합실습(HelpDesk AI). Day2, Day3 실습은 추후 추가 예정.
 
-### 실습1_주문요약 (Spring AI ChatClient 기초)
+### day1/실습1_주문요약 (Spring AI ChatClient 기초)
 주문을 조회해 Spring AI `ChatClient`로 한 문장 요약을 생성하는 API. AI 호출 실패 시 주문 정보 기반 fallback 문장을 반환하고, 존재하지 않는 주문과 다른 사용자의 주문은 동일하게 404로 응답(권한 정보 노출 방지).
 
 - `src/main/java/com/skala/ch02/` — 기본 주문 조회 API (`Order`, `OrderRepository`, `OrderController`, `OrderNotFoundException`)
