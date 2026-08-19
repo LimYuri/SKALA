@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: day1-order-summary
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:not-set}
+      chat:
+        options:
+          model: gpt-4o-mini
+    chat:
+      observations:
+        log-prompt: false
+      client:
+        observations:
+          log-prompt: false
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+  default-produces-media-type: application/json
+
+logging:
+  level:
+    com.skala: INFO
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics

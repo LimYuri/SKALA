@@ -106,6 +106,7 @@ NYC Yellow Taxi 운행 데이터를 Pandas·Polars로 정제하고(1899만 행 �
 - `판교_7반_임유리_day2종합실습_제출보고서.pdf` — 개인 제출 보고서 (팀 공통 분석 + 본인 기여 부분 포함)
 
 ## 08-10 ~ 08-14 · Java & Spring Boot
+Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 실습 코드. 강의자료 PDF 자체는 저작권 문제로 올리지 않고, 실습 중 작성한 코드만 정리했습니다. `01.training-code`는 직접 채워나간 실습 코드, `02.answer-code`는 비교용 정답 코드입니다.
 
 **01.java/** — Java 기초~심화 (1~3일차 오전)
 - `01.snippet` ~ `05.for` — 변수/자료형, 네이밍 규칙, 클래스와 객체, 제어문(if/switch/while/for)
@@ -132,3 +133,17 @@ NYC Yellow Taxi 운행 데이터를 Pandas·Polars로 정제하고(1899만 행 �
 - `15.actuator` — Spring Actuator
 - `16.execise` — 종합 실습
 - `17.http-api-server` — HTTP API 서버 구현
+
+## 08-18 ~ 08-20 · Spring AI
+"SpringAI 이해 및 활용" 과정. 강의자료 PDF(324p)는 저작권 문제로 올리지 않고, 실습 코드와 본인이 작성한 실행결과 보고서만 정리했습니다. 커리큘럼: Spring Boot 기초 계층 구조 → Spring AI 개요/아키텍처 → 개발환경 구성 → 의존성·설정과 ChatClient → 프롬프트·옵션·스트리밍 → 구조화 출력·멀티모달·임베딩 → LLM 활용 심화 → RAG(기본/심화) → Tool Calling·AI Agent·MCP → Tool·Agent 심화 → Advisors·메모리·운영 → 종합실습(HelpDesk AI). Day2, Day3 실습은 추후 추가 예정.
+
+### day1_주문요약 (Spring AI ChatClient 기초)
+주문을 조회해 Spring AI `ChatClient`로 한 문장 요약을 생성하는 API. AI 호출 실패 시 주문 정보 기반 fallback 문장을 반환하고, 존재하지 않는 주문과 다른 사용자의 주문은 동일하게 404로 응답(권한 정보 노출 방지).
+
+- `src/main/java/com/skala/ch02/` — 기본 주문 조회 API (`Order`, `OrderRepository`, `OrderController`, `OrderNotFoundException`)
+- `src/main/java/com/skala/day1/config/Lab1AiConfig.java` — ChatClient 빈 설정
+- `src/main/java/com/skala/day1/service/OrderSummaryService.java` — 주문 조회 + AI 호출 + fallback 요약 로직
+- `src/main/java/com/skala/day1/web/OrderSummaryController.java` — 요약 API 엔드포인트 (`GET /lab1/orders/{orderId}/summary`)
+- `src/main/java/com/skala/day1/web/SummaryResponse.java`, `ErrorResponse.java`, `Lab1ExceptionHandler.java` — 응답 DTO 및 예외 처리
+- `SpringAI_Day01_실행결과_임유리.pdf` — 실행결과 보고서 (정상 요약 테스트 HTTP 200, 타 사용자 주문 조회 실패 테스트 HTTP 404 등 Swagger 테스트 결과)
+- API 키는 환경변수(`OPENAI_API_KEY`)로 주입, 코드에 하드코딩되어 있지 않음
