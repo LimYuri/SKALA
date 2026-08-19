@@ -148,9 +148,10 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 - `SpringAI_Day01_실행결과_임유리.pdf` — 실행결과 보고서 (정상 요약 테스트 HTTP 200, 타 사용자 주문 조회 실패 테스트 HTTP 404 등 Swagger 테스트 결과)
 - API 키는 환경변수(`OPENAI_API_KEY`)로 주입, 코드에 하드코딩되어 있지 않음
 
-### day2/실습1_사내문서QA (RAG 기반 Q&A)
-사내 정책 문서 3개(반품/배송/멤버십)를 VectorStore에 저장하고, 질문과 관련된 문서를 검색해 검색된 근거만으로 답변하는 RAG API. 추측 답변 금지, 근거(sources)와 grounded 여부를 함께 반환.
+### day2/실습1_사내문서QA (RAG 기반 Q&A, Day1 누적)
+사내 정책 문서 3개(반품/배송/멤버십)를 VectorStore에 저장하고, 질문과 관련된 문서를 검색해 검색된 근거만으로 답변하는 RAG API. 추측 답변 금지, 근거(sources)와 grounded 여부를 함께 반환. "어제 만든 API 위에 근거를 붙인다"는 과제 흐름에 맞춰 Day1 주문 조회·요약 API(`com.skala.ch02`, `com.skala.day1`)를 그대로 유지한 채 Day2 RAG API(`com.example.day2.lab2`)를 추가한 누적 프로젝트로, 한 서버에서 Day1 (`/ch02/orders/{orderId}`, `/lab1/orders/{orderId}/summary`)과 Day2 (`/lab2/ingest`, `/lab2/retrieve`, `/lab2/ask`) API가 함께 노출됨.
 
+- `src/main/java/com/skala/` — Day1 주문 조회·요약 API (day1 폴더의 실습1_주문요약과 동일 코드, 누적 유지)
 - `src/main/java/com/example/day2/lab2/Lab2AiConfig.java` — VectorStore/임베딩 모델 설정
 - `src/main/java/com/example/day2/lab2/Lab2IngestService.java` — 문서 읽기 → 청크 분할 → 임베딩 → VectorStore 저장 (기존 source는 재적재 전 삭제)
 - `src/main/java/com/example/day2/lab2/Lab2RetrievalService.java` — topK·threshold 기반 유사도 검색, score/source/snippet 반환

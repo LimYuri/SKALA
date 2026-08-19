@@ -1,6 +1,14 @@
 # Spring AI Day 2 종합실습 - 사내 문서 Q&A
 
-독립 실행 가능한 기준 프로젝트입니다. 패키지는 `com.example.day2.lab2`, Spring Boot 3.5.16, Spring AI 1.1.8 기준입니다.
+PDF의 "어제 만든 API 위에 근거를 붙인다"는 흐름에 맞춘 누적 프로젝트입니다.
+기존 Day 1 주문 조회·요약 API(`com.skala.ch02`, `com.skala.day1`)를 유지하고,
+Day 2 RAG API(`com.example.day2.lab2`)를 추가했습니다. Spring Boot 3.5.16,
+Spring AI 1.1.8 기준입니다.
+
+한 서버에서 다음 API가 함께 노출됩니다.
+
+- Day 1: `/ch02/orders/{orderId}`, `/lab1/orders/{orderId}/summary`
+- Day 2: `/lab2/ingest`, `/lab2/retrieve`, `/lab2/ask`
 
 ## 실행
 
