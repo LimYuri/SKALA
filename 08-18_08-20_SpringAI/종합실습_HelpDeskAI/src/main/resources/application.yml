@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: skala-helpdesk-ai
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:demo-key-offline-mode}
+      chat:
+        options:
+          model: ${HELPDESK_PRIMARY_MODEL:gpt-4o-mini}
+          temperature: 0.2
+      embedding:
+        options:
+          model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+  datasource:
+    url: jdbc:h2:file:./data/helpdesk-memory;AUTO_SERVER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      mode: always
+
+helpdesk:
+  live-ai-enabled: ${HELPDESK_LIVE_AI_ENABLED:false}
+  rag:
+    top-k: ${HELPDESK_RAG_TOP_K:5}
+    threshold: ${HELPDESK_RAG_THRESHOLD:0.35}
+    chunk-size: ${HELPDESK_CHUNK_SIZE:800}
+    min-chunk-size-chars: ${HELPDESK_MIN_CHUNK_CHARS:350}
+  memory:
+    max-messages: ${HELPDESK_MEMORY_MAX:20}
+  safety:
+    max-input-chars: ${HELPDESK_MAX_INPUT_CHARS:10000}
+    max-tool-calls: ${HELPDESK_MAX_TOOL_CALLS:3}
+  model:
+    primary: ${HELPDESK_PRIMARY_MODEL:gpt-4o-mini}
+    fallback: ${HELPDESK_FALLBACK_MODEL:gpt-4.1-mini}
+  p95-target-millis: ${HELPDESK_P95_TARGET_MS:5000}
+  average-token-limit: ${HELPDESK_AVG_TOKEN_LIMIT:4000}
+
+management:
+  metrics:
+    distribution:
+      percentiles:
+        ai.latency: 0.95
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  pattern:
+    level: "%5p [traceId:%X{traceId:-none}]"

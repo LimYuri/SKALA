@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: ${PGVECTOR_JDBC_URL:jdbc:postgresql://localhost:5432/helpdesk}
+    username: ${PGVECTOR_USERNAME:helpdesk}
+    password: ${PGVECTOR_PASSWORD:helpdesk}
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-postgresql.sql
+  ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 1536
+

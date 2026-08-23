@@ -163,3 +163,22 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 - `요구사항_대조표_및_제출가이드.md`, `검증결과.txt` — 요구사항 대조 및 검증 기록
 - `SpringAI_Day2_실행결과_임유리.pdf` — 실행결과 보고서 (문서 인제스트, 검색, 근거 기반 답변 테스트 결과)
 - API 키는 환경변수(`OPENAI_API_KEY`)로 주입, 코드에 하드코딩되어 있지 않음
+
+### 종합실습_HelpDeskAI (RAG · Tool · Memory · 안전성 · 관측성 종합)
+교안 13장 "종합 실습 — HelpDesk AI 만들기"를 구현한 최종 종합실습. day1/day2/day3 개별 실습과 별개로 독립 프로젝트(`com.skala.helpdesk`)로 제출. 사내 규정 문서(RAG)와 실시간 주문 데이터(Tool)를 함께 다루는 상담 어시스턴트로, 반품 규정 문의·주문 조회·대명사 후속질문·교환 접수·운영자 지표 조회 5가지 대화 시나리오를 RAG·Tool·Memory·안전성·관측성 5개 축으로 구현.
+
+- `src/main/java/com/skala/helpdesk/rag/IngestService.java` — 문서 인제스트, 출처 표시
+- `src/main/java/com/skala/helpdesk/tools/OrderTools.java`, `TicketTools.java` — `orderStatus`/`createTicket` Tool, 소유권 검증(남의 주문 차단)
+- `src/main/java/com/skala/helpdesk/tools/ToolGuard.java`, `ToolRequestContext.java` — Tool 호출 횟수 제한 및 요청 컨텍스트
+- `src/main/java/com/skala/helpdesk/repository/JdbcConversationRepository.java` — JDBC 영속 메모리, `tenant:user:session` 격리
+- `src/main/java/com/skala/helpdesk/repository/OrderRepository.java`, `TicketRepository.java` — 주문/티켓 데이터 (환불·교환 티켓은 PENDING 생성 후 관리자 승인)
+- `src/main/java/com/skala/helpdesk/advisor/SafeGuardAdvisor.java`, `SafetyService.java` — 안전성 차단
+- `src/main/java/com/skala/helpdesk/advisor/AuditAdvisor.java`, `AuditService.java`, `ToolAuditAspect.java` — 전체 Tool 호출 감사 로그, 추적 ID
+- `src/main/java/com/skala/helpdesk/advisor/TokenMeterAdvisor.java` — 토큰·비용·지연 지표 계측
+- `src/main/java/com/skala/helpdesk/chat/HelpDeskService.java`, `ModelFallbackExecutor.java` — 대화 처리, 주 모델 장애 시 보조 모델 fallback
+- `src/main/java/com/skala/helpdesk/web/ChatController.java`, `AdminController.java`, `SecurityConfig.java` — 채팅/관리자 API, 권한 격리(403), SSE `token`→`sources` 스트리밍
+- `src/main/java/com/skala/helpdesk/eval/GoldenSet.java` — 골든셋 엣지케이스 평가
+- `src/test/` — HelpDeskCompletionTest(레드팀 프롬프트 10종 방어), GoldenSetTest, HelpDeskWebTest, FallbackExecutorTest (총 39개 테스트 전체 통과)
+- `docker-compose.yml`, `application-pgvector.yml` — PostgreSQL/pgvector 프로파일 (기본은 별도 설치 불필요한 SimpleVectorStore + H2)
+- `SpringAI_HelpDeskAI_실행결과_임유리.docx` — 실행결과 보고서. PDF 요구사항 대조표(9개 항목 전체 충족) + 2026-08-20 실제 OpenAI API 키로 진행한 라이브 E2E 검증(RAG/Tool/멀티턴/티켓승인/SSE) 캡처 9장
+- API 키는 환경변수로 주입, 로컬 실행 시 생성되는 H2 DB 파일(`data/`)은 제외
