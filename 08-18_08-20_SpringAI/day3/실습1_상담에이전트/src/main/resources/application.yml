@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: spring-ai-day2-rag
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:demo-key-required-for-real-run}
+      chat:
+        options:
+          model: ${OPENAI_CHAT_MODEL:gpt-4.1-mini}
+          temperature: 0
+      embedding:
+        options:
+          model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+lab2:
+  rag:
+    chunk-size: ${LAB2_CHUNK_SIZE:400}
+    min-chunk-size-chars: ${LAB2_MIN_CHUNK_CHARS:200}
+    min-chunk-length-to-embed: ${LAB2_MIN_EMBED_CHARS:5}
+    max-num-chunks: ${LAB2_MAX_CHUNKS:10000}
+    keep-separator: true
+    overlap-chars: ${LAB2_OVERLAP_CHARS:0}
+    top-k: ${LAB2_TOP_K:4}
+    threshold: ${LAB2_THRESHOLD:0.5}
+    version: ${LAB2_DOC_VERSION:2026-08-19}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  pattern:
+    level: "%5p [traceId:%X{traceId:-none}]"
+
+lab3:
+  input-max-length: ${LAB3_INPUT_MAX_LENGTH:1000}
+  max-tool-calls: ${LAB3_MAX_TOOL_CALLS:3}
+  live-ai-enabled: ${LAB3_LIVE_AI_ENABLED:false}

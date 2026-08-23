@@ -135,7 +135,7 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 - `17.http-api-server` — HTTP API 서버 구현
 
 ## 08-18 ~ 08-20 · Spring AI
-"SpringAI 이해 및 활용" 과정. 강의자료 PDF(324p)는 저작권 문제로 올리지 않고, 실습 코드와 본인이 작성한 실행결과 보고서만 정리했습니다. 커리큘럼: Spring Boot 기초 계층 구조 → Spring AI 개요/아키텍처 → 개발환경 구성 → 의존성·설정과 ChatClient → 프롬프트·옵션·스트리밍 → 구조화 출력·멀티모달·임베딩 → LLM 활용 심화 → RAG(기본/심화) → Tool Calling·AI Agent·MCP → Tool·Agent 심화 → Advisors·메모리·운영 → 종합실습(HelpDesk AI). Day3 실습은 추후 추가 예정.
+"SpringAI 이해 및 활용" 과정. 강의자료 PDF(324p)는 저작권 문제로 올리지 않고, 실습 코드와 본인이 작성한 실행결과 보고서만 정리했습니다. 커리큘럼: Spring Boot 기초 계층 구조 → Spring AI 개요/아키텍처 → 개발환경 구성 → 의존성·설정과 ChatClient → 프롬프트·옵션·스트리밍 → 구조화 출력·멀티모달·임베딩 → LLM 활용 심화 → RAG(기본/심화) → Tool Calling·AI Agent·MCP → Tool·Agent 심화 → Advisors·메모리·운영 → 종합실습(HelpDesk AI).
 
 ### day1/실습1_주문요약 (Spring AI ChatClient 기초)
 주문을 조회해 Spring AI `ChatClient`로 한 문장 요약을 생성하는 API. AI 호출 실패 시 주문 정보 기반 fallback 문장을 반환하고, 존재하지 않는 주문과 다른 사용자의 주문은 동일하게 404로 응답(권한 정보 노출 방지).
@@ -163,6 +163,25 @@ Full-stack Engineering Back-end 개발 과정(이용우 강사) 중 작성한 �
 - `요구사항_대조표_및_제출가이드.md`, `검증결과.txt` — 요구사항 대조 및 검증 기록
 - `SpringAI_Day2_실행결과_임유리.pdf` — 실행결과 보고서 (문서 인제스트, 검색, 근거 기반 답변 테스트 결과)
 - API 키는 환경변수(`OPENAI_API_KEY`)로 주입, 코드에 하드코딩되어 있지 않음
+
+### day3/실습1_상담에이전트 (Day1+Day2 누적, Tool·권한·승인·관측)
+PDF 진행 흐름대로 Day1 주문 API → Day2 사내문서 RAG → Day3 상담 에이전트를 한 프로젝트에 누적. `getOrder`/`requestRefund` Tool과 멀티턴 대화, 환불은 PENDING 티켓 생성 후 관리자 승인, 일반 사용자의 관리자 API 접근 차단(403), 레드팀 8종 방어, Tool 감사 로그·토큰/지연/호출 계측까지 구현.
+
+- `src/main/java/com/skala/` — Day1 주문 조회·요약 API (day1과 동일 코드, 누적 유지)
+- `src/main/java/com/example/day2/lab2/` — Day2 RAG API (day2와 동일 코드, 누적 유지)
+- `src/main/java/com/example/day2/lab3/tool/OrderTools.java` — `getOrder`, `requestRefund` Tool. `userId`는 모델 인자가 아닌 서버 `ToolContext`에서만 가져와 관리자 사칭 문장으로도 권한 변경 불가
+- `src/main/java/com/example/day2/lab3/service/Lab3ChatService.java`, `ConversationService.java` — 상담 대화 처리, 세션별 멀티턴 문맥 유지
+- `src/main/java/com/example/day2/lab3/service/PolicyRagService.java` — Day2 VectorStore 재사용한 정책 RAG 답변
+- `src/main/java/com/example/day2/lab3/repository/OrderRepository.java`, `RefundTicketRepository.java` — 주문/환불티켓 데이터 (환불은 PENDING만 생성, 승인은 Tool로 노출하지 않고 관리자 REST API에만 존재)
+- `src/main/java/com/example/day2/lab3/security/SafetyService.java`, `advisor/SafetyAdvisor.java` — 안전성 차단 (Advisor 선차단 시 메모리 미저장)
+- `src/main/java/com/example/day2/lab3/config/SecurityConfig.java`, `OpenApiSecurityConfig.java` — `user1`/`user2`/`admin` 인증, 관리자 API `@PreAuthorize("hasRole('ADMIN')")` 보호
+- `src/main/java/com/example/day2/lab3/advisor/AuditAdvisor.java`, `audit/AuditService.java`, `web/TraceIdFilter.java` — Tool 호출 감사 로그, 추적 ID
+- `src/main/java/com/example/day2/lab3/advisor/TokenMeterAdvisor.java` — 토큰·지연·Tool 호출 계측 (`/actuator/metrics/ai.tokens` 등)
+- `src/main/java/com/example/day2/lab3/web/Lab3Controller.java` — `POST /lab3/chat`, `GET /lab3/chat/history`, 관리자 pending 조회/승인
+- `src/test/java/.../lab3/Lab3CompletionTest.java`, `SecurityAuthorizationTest.java` — 완료기준·레드팀 8종·권한 격리 테스트
+- `PDF_요구사항_대조표.md`, `요구사항_대조표_및_제출가이드.md`, `레드팀_결과표.md`, `검증결과.txt` — 요구사항 대조 및 검증 기록
+- `SpringAI_Day3_실행결과_임유리.pdf` — 실행결과 보고서 (완료기준 9개 항목 전체 통과: 8083 포트 실행, Tool 호출, 멀티턴+RAG 출처, 환불 PENDING, 403 차단, Advisor 선차단, 레드팀 8종 방어, 감사·계측, 전체 자동 테스트)
+- API 키는 환경변수(`OPENAI_API_KEY`, `LAB3_LIVE_AI_ENABLED`)로 주입, 코드에 하드코딩되어 있지 않음
 
 ### 종합실습_HelpDeskAI (RAG · Tool · Memory · 안전성 · 관측성 종합)
 교안 13장 "종합 실습 — HelpDesk AI 만들기"를 구현한 최종 종합실습. day1/day2/day3 개별 실습과 별개로 독립 프로젝트(`com.skala.helpdesk`)로 제출. 사내 규정 문서(RAG)와 실시간 주문 데이터(Tool)를 함께 다루는 상담 어시스턴트로, 반품 규정 문의·주문 조회·대명사 후속질문·교환 접수·운영자 지표 조회 5가지 대화 시나리오를 RAG·Tool·Memory·안전성·관측성 5개 축으로 구현.
