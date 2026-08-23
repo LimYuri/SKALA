@@ -1,7 +1,6 @@
 # Spring AI Day 3 누적 종합실습 — 상담 에이전트
 
-PDF의 진행 흐름대로 Day 1 주문 API → Day 2 사내 문서 RAG → Day 3 상담 에이전트를
-한 Spring Boot 프로젝트에 누적했습니다.
+Day 1 주문 API → Day 2 사내 문서 RAG → Day 3 상담 에이전트를 한 Spring Boot 프로젝트에 누적했습니다.
 
 ## 포함 API
 
