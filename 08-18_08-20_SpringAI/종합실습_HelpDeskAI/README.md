@@ -1,7 +1,5 @@
 # SpringAI 종합실습 — HelpDeskAI
 
-Spring AI 교안의 **13. 종합실습 — HelpDeskAI 만들기**를 독립 프로젝트로 구현한 제출용 코드입니다. Day3 단일 실습에 덮어쓰지 않고, PDF가 지정한 프로젝트명 `SpringAI_종합실습`과 루트 패키지 `com.skala.helpdesk`를 사용했습니다.
-
 ## 핵심 기능
 
 - RAG 문서 인제스트와 근거 출처 표시
