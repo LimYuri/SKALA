@@ -201,3 +201,24 @@ PDF 진행 흐름대로 Day1 주문 API → Day2 사내문서 RAG → Day3 상�
 - `docker-compose.yml`, `application-pgvector.yml` — PostgreSQL/pgvector 프로파일 (기본은 별도 설치 불필요한 SimpleVectorStore + H2)
 - `SpringAI_HelpDeskAI_실행결과_임유리.docx` — 실행결과 보고서. PDF 요구사항 대조표(9개 항목 전체 충족) + 2026-08-20 실제 OpenAI API 키로 진행한 라이브 E2E 검증(RAG/Tool/멀티턴/티켓승인/SSE) 캡처 9장
 - API 키는 환경변수로 주입, 로컬 실행 시 생성되는 H2 DB 파일(`data/`)은 제외
+
+## 08-27 · Agile+MSA 조별 과제 (7반 GMG조)
+GearHub Campus — 학과·연구실·동아리가 공용/그룹 전용 장비를 대여·반납·도입하고, 관리자가 4주 수요를 예측해 재고 이동·도입을 판단하는 자산 운영 MVP. MSA로 구성 (User/Asset/Request/Budget/Analytics 서비스 + API Gateway + Kafka + MariaDB), 프론트는 Vue 3.
+
+- `GMG_수강신청플랫폼/Agile+MSA_조별 과제_7반_GMG.pdf` — 제출용 기획서
+- `GMG_수강신청플랫폼/backend_modified/` — 백엔드·DB·실행 구성 변경 파일 (원본 경로의 `/`를 `__`로 치환, 상태는 readme.md 표 참고)
+- `GMG_수강신청플랫폼/vue-frontend/` — Vue 프론트엔드 전체 소스 (빌드 산출물 `dist/`, `node_modules/`는 제외)
+- `GMG_수강신청플랫폼/데모 영상.mov` — 시연 영상
+- `GMG_수강신청플랫폼/readme.md` — 제출 패키지 구성 기준 및 백엔드 변경 파일 상세 표
+
+## 08-31 · sLLM 및 Fine-Tuning 2일차 실습 (P231)
+Qwen2.5-1.5B-Instruct를 LoRA SFT로 파인튜닝하는 실습. 입력 길이, LoRA r/alpha, 학습률, epoch를 바꿔 아홉 개 실행 결과를 비교하고, HR 규정 안내 챗봇을 가상 시나리오로 삼아 실제 답변 품질까지 함께 검토했다.
+
+- `2일차_sLLM_Fine_Tuning_과제_7반_P231_임유리.pdf` — 실습 서브노트 (이해관계자 가치, AI 솔루션 설계, 실행 결과 비교)
+- `sLLM-service_실행캡쳐_Swagger_UI.pdf` — 파인튜닝한 모델을 서빙하는 서비스의 Swagger UI 실행 캡쳐
+
+## 09-02 · CNN Architecture 이해 및 최적화 (Fashion-MNIST, 7반 팀 과제)
+Fashion-MNIST 분류용 Vanilla CNN을 Baseline(Val Acc 0.9257 · Test Acc 0.9185)으로 두고, 팀원별로 변수 하나씩만 바꿔가며 과적합 완화 효과를 비교한 팀 과제. 조원: 김선정·임유리·이민형 (Epoch 4 / Learning Rate 0.0005 / Dropout 0.2 각각 담당).
+
+- `4기-CNN종합실습7반-김선정_임유리_이민형.ipynb` — 실험 코드 (Baseline + 3개 비교 실험)
+- `4기-CNN종합실습7반-김선정_임유리_이민형.pdf` — 실습 목적부터 실험 설계·결과 해석·한계·결론까지 정리한 보고서

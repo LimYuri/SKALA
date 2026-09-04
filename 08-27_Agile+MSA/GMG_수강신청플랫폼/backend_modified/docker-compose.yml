@@ -1,0 +1,313 @@
+# The following practice code is intended for educational purposes only. For contact :  audit@korea.ac.kr, Sungryel Lim Ph.D
+
+# This practice code is not a completed commercial version but has been developed for educational purposes; supplementation is required depending on the deployment objective for use as a commercial service.
+
+services:
+
+  # Infrastructure
+
+  mariadb:
+    image: mariadb:11.2
+    container_name: lecturedb
+    environment:
+      MYSQL_ROOT_PASSWORD: SqlDba-1
+      MYSQL_DATABASE: lecture_db
+      MYSQL_USER: manager
+      MYSQL_PASSWORD: SqlDba-1
+    ports:
+      - "3379:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - lecture-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.0
+    container_name: lecture-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - lecture-net
+
+
+  # Service Discovery
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: lecture-eureka
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - lecture-net
+
+
+  # Auth Server
+
+  auth-server:
+    image: msa-lecture/auth-server:1.0
+    container_name: lecture-auth
+    ports:
+      - "9000:9000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://lecturedb:3306/lecture_db
+      - SPRING_DATASOURCE_USERNAME=manager
+      - SPRING_DATASOURCE_PASSWORD=SqlDba-1
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9000/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+    networks:
+      - lecture-net
+
+
+  # API Gateway
+
+  api-gateway:
+    image: msa-lecture/api-gateway:1.0
+    container_name: lecture-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://auth-server:9000/oauth2/jwks
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8080
+      # 복합 List 설정은 인덱스형 환경변수 대신 JSON으로 한 번에 전달한다.
+      # 제공 Gateway 이미지의 기본 routes 배열과 Spring Boot 바인딩 호환성을 유지한다.
+      - >-
+        SPRING_APPLICATION_JSON={"spring":{"cloud":{"gateway":{"routes":[
+        {"id":"auth-server","uri":"lb://auth-server","predicates":["Path=/oauth2/**,/login,/login/**,/logout,/userinfo,/error,/default-ui.css,/favicon.ico,/.well-known/openid-configuration,/.well-known/oauth-authorization-server"],"filters":["RewritePath=/(?<segment>.*), /$${segment}","PreserveHostHeader"]},
+        {"id":"member-service","uri":"lb://member-service","predicates":["Path=/api/users/**"],"filters":["RewritePath=/api/users/(?<segment>.*), /api/users/$${segment}"]},
+        {"id":"asset-service","uri":"lb://asset-service","predicates":["Path=/api/courses/**"],"filters":["RewritePath=/api/courses/(?<segment>.*), /api/courses/$${segment}"]},
+        {"id":"request-service","uri":"lb://request-service","predicates":["Path=/api/enrollments/**"],"filters":["RewritePath=/api/enrollments/(?<segment>.*), /api/enrollments/$${segment}"]},
+        {"id":"budget-service","uri":"lb://budget-service","predicates":["Path=/api/payments/**"],"filters":["RewritePath=/api/payments/(?<segment>.*), /api/payments/$${segment}"]},
+        {"id":"alternative-service","uri":"lb://alternative-service","predicates":["Path=/api/recommend/**"],"filters":["RewritePath=/api/recommend/(?<segment>.*), /api/recommend/$${segment}"]}
+        ]}}}}
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+    networks:
+      - lecture-net
+
+
+  # Microservices
+
+  member-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: gearhub-member
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://lecturedb:3306/lecture_db
+      - SPRING_DATASOURCE_USERNAME=manager
+      - SPRING_DATASOURCE_PASSWORD=SqlDba-1
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://auth-server:9000/oauth2/jwks
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://auth-server:9000
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+    networks:
+      - lecture-net
+
+  asset-service:
+    build:
+      context: ./course-service
+      dockerfile: Dockerfile
+    container_name: gearhub-asset
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://lecturedb:3306/lecture_db
+      - SPRING_DATASOURCE_USERNAME=manager
+      - SPRING_DATASOURCE_PASSWORD=SqlDba-1
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://auth-server:9000/oauth2/jwks
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://auth-server:9000
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+    networks:
+      - lecture-net
+
+  request-service:
+    build:
+      context: ./enrollment-service
+      dockerfile: Dockerfile
+    container_name: gearhub-request
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://lecturedb:3306/lecture_db
+      - SPRING_DATASOURCE_USERNAME=manager
+      - SPRING_DATASOURCE_PASSWORD=SqlDba-1
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://auth-server:9000/oauth2/jwks
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://auth-server:9000
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - lecture-net
+
+  budget-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: gearhub-budget
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://lecturedb:3306/lecture_db
+      - SPRING_DATASOURCE_USERNAME=manager
+      - SPRING_DATASOURCE_PASSWORD=SqlDba-1
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://auth-server:9000/oauth2/jwks
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://auth-server:9000
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - lecture-net
+
+  alternative-service:
+    build:
+      context: ./recommend-service
+      dockerfile: Dockerfile
+    container_name: gearhub-alternative
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+      - APP_NAME=alternative-service
+      - EUREKA_INSTANCE_HOST=alternative-service
+      - JWT_ISSUER_URI=http://localhost:8080
+      - JWK_SET_URI=http://auth-server:9000/oauth2/jwks
+      - ENROLLMENT_SERVICE_URL=http://request-service:8083
+      - COURSE_SERVICE_URL=http://asset-service:8082
+      - KAFKA_CONSUMER_GROUP_ID=alternative-service
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_TOPIC_RENTAL_LIFECYCLE=rental.lifecycle
+      - DB_HOST=lecturedb
+      - DB_PORT=3306
+      - DB_USER=manager
+      - DB_PASSWORD=SqlDba-1
+      - DB_NAME=lecture_db
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+      request-service:
+        condition: service_started
+      asset-service:
+        condition: service_started
+    networks:
+      - lecture-net
+
+  # Web frontend
+
+  frontend:
+    build:
+      context: ./vue-frontend
+      dockerfile: Dockerfile
+    container_name: gearhub-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      api-gateway:
+        condition: service_started
+    networks:
+      - lecture-net
+
+
+# Volumes & Networks
+
+volumes:
+  mariadb_data:
+  kafka_data:
+
+networks:
+  lecture-net:
+    driver: bridge
