@@ -203,7 +203,7 @@ PDF 진행 흐름대로 Day1 주문 API → Day2 사내문서 RAG → Day3 상�
 - API 키는 환경변수로 주입, 로컬 실행 시 생성되는 H2 DB 파일(`data/`)은 제외
 
 ## 08-27 · Agile+MSA 조별 과제 (7반 GMG조)
-GearHub Campus — 학과·연구실·동아리가 공용/그룹 전용 장비를 대여·반납·도입하고, 관리자가 4주 수요를 예측해 재고 이동·도입을 판단하는 자산 운영 MVP. MSA로 구성 (User/Asset/Request/Budget/Analytics 서비스 + API Gateway + Kafka + MariaDB), 프론트는 Vue 3.
+USE(Universal StoragE) — 학과·연구실·동아리가 공용/그룹 전용 장비를 대여·반납·도입하고, 관리자가 4주 수요를 예측해 재고 이동·도입을 판단하는 자산 운영 MVP. MSA로 구성 (User/Asset/Request/Budget/Analytics 서비스 + API Gateway + Kafka + MariaDB), 프론트는 Vue 3.
 
 - `GMG_수강신청플랫폼/Agile+MSA_조별 과제_7반_GMG.pdf` — 제출용 기획서
 - `GMG_수강신청플랫폼/backend_modified/` — 백엔드·DB·실행 구성 변경 파일 (원본 경로의 `/`를 `__`로 치환, 상태는 readme.md 표 참고)
