@@ -232,3 +232,12 @@ Fashion-MNIST 분류용 Vanilla CNN을 Baseline(Val Acc 0.9257 · Test Acc 0.918
 - `무대로그_StageLog/PG7반_P231_임유리_무대로그_발표자료.pdf` — 발표자료
 
 미니프로젝트 과제 스펙 문서, 실습 안내/FAQ, 일차별 교안, 회의실예약 샘플(홍길동)은 강사 제공 자료라 저작권 문제로 올리지 않았습니다.
+
+## 09-09 ~ 09-11 · 생성형 AI 서비스 개발의 이해/활용 (7반 5조 팀 과제)
+MarketRadar — 데일리 뉴스 브리핑 Agent. 사용자가 입력한 검색어로 Tavily News API에서 최근 1일 국내·국외 기사를 병렬 검색(최대 10건)하고, `gpt-4o-mini`가 관련 기사를 선정·요약해 이메일 초안을 생성한다. Structured Output, URL 중복 제거, Middleware, 단기 메모리, 기사 ID 검증을 거치며, 사용자가 초안을 검토·수정 요청한 뒤 정확히 "승인"을 입력한 경우에만 Gmail SMTP로 실제 전송한다.
+
+- `7반_5조_데일리뉴스브리핑Agent/7반_5조_데일리뉴스브리핑Agent.ipynb` — 전체 구현 및 실행 예시 (뉴스 검색 → 브리핑 생성 → 수정 요청 → SMTP 인증 확인 → 승인 후 전송)
+- `7반_5조_데일리뉴스브리핑Agent/requirements-marketradar.txt` — 의존성 (langchain, langgraph, tavily-python 등)
+- API 키(`OPENAI_API_KEY`, `TAVILY_API_KEY`, `GMAIL_APP_PASSWORD` 등)는 `.env`로 주입, 코드에 하드코딩되어 있지 않음
+
+교재(저작권 보호 자료)는 올리지 않았습니다.
