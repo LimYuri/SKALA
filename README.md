@@ -241,3 +241,11 @@ MarketRadar — 데일리 뉴스 브리핑 Agent. 사용자가 입력한 검색�
 - API 키(`OPENAI_API_KEY`, `TAVILY_API_KEY`, `GMAIL_APP_PASSWORD` 등)는 `.env`로 주입, 코드에 하드코딩되어 있지 않음
 
 교재(저작권 보호 자료)는 올리지 않았습니다.
+
+## 09-07 ~ 09-08 · EDA & Feature Engineering 실습 (Ames Housing, 5조 팀 과제)
+Ames Housing 데이터(2,930행 · 15열, Target: SalePrice)로 진행한 Question-Driven EDA와 Feature Engineering 조별 실습. 조원: P229-이지원, P213-김선정, P209-곽민규, P231-임유리, P240-현용찬.
+
+- `5조_실습보고서/EDA_Findings_5조_실습보고서.pdf` — 데이터 구조, 결측치 의미(Garage_Yr_Blt 등), Target 분포·왜도, IQR 이상치 후보, 변수별 상관관계, 범주형 변수별 가격 차이, 향후 전처리 방향 정리
+- `5조_실습보고서/Feature_Engineering_5조_보고서.pdf` — 결측치 중앙값 대체·이상치 clipping, `Total_Area`/`Quality_Area` 파생변수, 로그변환·인코딩 적용 실험 (기준 모델 대비 MAE $23,759→$16,172, Adjusted R² 0.81→0.89로 개선)
+
+실습용 빈 노트북 템플릿(`실습_Question_Driven_EDA.ipynb`, `실습_Feature_Engineering.ipynb`)과 원본 데이터(`ames_housing_edu.csv`), 같은 기간 진행한 쿠버네티스 실습 교재는 강사 제공 자료라 올리지 않았습니다.
