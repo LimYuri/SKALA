@@ -1,0 +1,95 @@
+Table users {
+  id varchar [pk]
+  name varchar [not null]
+  email varchar [not null, unique]
+  password varchar [not null, note: '암호화하여 저장 (REQ-NFN)']
+  created_at timestamp [not null]
+}
+
+Table bands {
+  id varchar [pk]
+  name varchar [not null]
+  created_at timestamp [not null]
+}
+
+Table band_members {
+  band_id varchar [ref: > bands.id]
+  user_id varchar [ref: > users.id]
+  role varchar [note: '리더 / 멤버']
+  indexes {
+    (band_id, user_id) [pk]
+  }
+}
+
+Table availabilities {
+  id varchar [pk]
+  user_id varchar [ref: > users.id, not null]
+  band_id varchar [ref: > bands.id, not null]
+  weekday integer [not null, note: '0=일 ~ 6=토']
+  start_time time [not null]
+  end_time time [not null]
+}
+
+Table schedules {
+  id varchar [pk]
+  band_id varchar [ref: > bands.id, not null]
+  type varchar [not null, note: '합주 / 공연']
+  status varchar [not null, note: '예정 / 완료']
+  date date [not null]
+  start_time time
+  location varchar
+  created_at timestamp [not null]
+}
+
+Table songs {
+  id varchar [pk]
+  band_id varchar [ref: > bands.id, note: '밴드 전용 곡. null이면 공통 기본곡']
+  title varchar [not null]
+  duration_sec integer [not null]
+}
+
+Table setlist_items {
+  id varchar [pk]
+  schedule_id varchar [ref: > schedules.id, not null]
+  song_id varchar [ref: > songs.id, not null]
+  order_num integer [not null]
+}
+
+Table cuesheets {
+  id varchar [pk]
+  schedule_id varchar [ref: - schedules.id, not null, unique]
+  total_duration_sec integer
+  created_at timestamp [not null]
+}
+
+Table cuesheet_items {
+  id varchar [pk]
+  cuesheet_id varchar [ref: > cuesheets.id, not null]
+  song_id varchar [ref: > songs.id, note: 'SONG 유형일 때만 사용']
+  item_type varchar [not null, note: 'SONG / MC / SETUP / BREAK']
+  title varchar [not null]
+  duration_sec integer [not null, note: '0 이상']
+  order_num integer [not null, note: '드래그로 정한 순서, cuesheet_id 내 유일']
+  note text [note: '현장 진행 메모']
+  indexes {
+    (cuesheet_id, order_num) [unique, name: 'uq_cuesheet_items_order']
+  }
+}
+
+Table performance_records {
+  id varchar [pk]
+  schedule_id varchar [ref: - schedules.id, not null, unique]
+  audience_count integer
+  strengths_text text [note: '잘한 점']
+  improvements_text text [note: '부족했던 점 · 다음 공연에서 보완할 점']
+  share_token varchar [unique]
+  created_at timestamp [not null]
+}
+
+Table performance_photos {
+  id varchar [pk]
+  performance_record_id varchar [ref: > performance_records.id, not null]
+  photo_url varchar [not null, note: '사진 · 영상 · 음성 자료의 저장 위치']
+  media_type varchar [not null, check: `media_type IN ('PHOTO', 'VIDEO', 'AUDIO')`, note: 'PHOTO / VIDEO / AUDIO, 기본값 PHOTO']
+  order_num integer [not null]
+}
