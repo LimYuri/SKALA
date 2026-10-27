@@ -24,6 +24,7 @@ class Settings:
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     tavily_api_key: str = os.getenv("TAVILY_API_KEY", "")
     recursion_limit: int = int(os.getenv("RECURSION_LIMIT", "25"))
+    max_run_cost_usd: float = float(os.getenv("MAX_RUN_COST_USD", "0.004"))
     frontend_origin: str = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
     poor_output_test: bool = os.getenv("POOR_OUTPUT_TEST", "0") == "1"   # 화면에서 모드를 보내지 않을 때의 기본값
 

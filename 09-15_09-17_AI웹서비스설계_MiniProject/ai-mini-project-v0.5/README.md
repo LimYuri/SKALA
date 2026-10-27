@@ -11,7 +11,8 @@
 - `Node.js` 18.17 이상 설치 확인 : `node --version`
 - 프로젝트 루트 : `ai-mini-project-v0.5/`
 - 루트에 `.env` 준비
-  - 필수 : ANY_API_KEY
+  - 필수 : `OPENAI_API_KEY`
+  - 선택 : `TAVILY_API_KEY`, `MAX_RUN_COST_USD` (LLM 비용 상한, 기본값 `$0.004`)
 
 ### 1. 코드 받기 (최초 1회)
 
@@ -48,6 +49,8 @@ uv run uvicorn app.main:app --reload --port 8000
 브라우저에서 `http://localhost:8000/api/config`를 열어 아이템 목록(JSON)이 보이면 정상입니다.
 
 > Backend 실행 시 `LangChainPendingDeprecationWarning` 경고가 보여도 동작에는 영향이 없습니다.
+
+LLM 비용 상한은 실행별로 적용됩니다. 상한에 도달하면 추가 호출을 건너뛰고, 그때까지 수집한 근거/분석을 부분 보고서로 표시합니다. 낮은 값으로 시험할 때는 `.env`에 `MAX_RUN_COST_USD=0.0001`을 설정하고 Backend를 재시작하세요.
 
 ### 5. Frontend 실행 (Terminal #2)
 

@@ -23,7 +23,8 @@ from pydantic import BaseModel
 
 from app.agent.graph import graph
 from app.config import get_item, load_items, settings
-from app.events import Done, ErrorEvent, Report, RunStart
+from app.events import Done, ErrorEvent, Progress, Report, RunStart
+from app.llm import CostLimitReached, reset_run_budget, set_run_budget
 
 app = FastAPI(title="AI Service Mini Project")
 app.add_middleware(
@@ -35,6 +36,23 @@ app.add_middleware(
 
 # 실행이 끝난 보고서를 run_id 별로 보관 (서버를 재시작하면 사라짐)
 REPORTS: dict[str, str] = {}
+
+
+def budget_partial_report(state: dict, reason: str) -> str:
+    draft = state.get("draft", "").strip()
+    if draft:
+        return f"{draft}\n\n> 비용 상한 도달: {reason}"
+    sections = ["# 비용 상한으로 조기 종료", f"{reason}"]
+    findings = state.get("competitor_findings", [])
+    if findings:
+        sections.append("## 수집된 경쟁사 분석")
+        for finding in findings:
+            sections.append(f"### {finding['competitor']}\n{finding['analysis']}\n근거: " + ", ".join(e["source"] for e in finding.get("evidence", [])))
+    else:
+        evidence = state.get("evidence", [])
+        sections.append("## 수집된 근거 자료")
+        sections.extend(f"- {item.get('title', item.get('source', '자료'))}: {item.get('source', '')}" for item in evidence)
+    return "\n\n".join(sections)
 
 
 class ChatRequest(BaseModel):
@@ -82,6 +100,8 @@ async def chat(req: ChatRequest):
         started = time.perf_counter()
         totals = {"llm_calls": 0, "input_tokens": 0, "output_tokens": 0, "total_cost_usd": 0.0}
         final_draft = ""
+        latest_state = initial_state
+        budget_token = set_run_budget(settings.max_run_cost_usd)
 
         yield to_sse(RunStart(
             run_id=run_id, item_id=req.item_id, item_name=item["name"],
@@ -97,6 +117,7 @@ async def chat(req: ChatRequest):
                 config={"recursion_limit": settings.recursion_limit},
             ):
                 if mode == "values":
+                    latest_state = payload
                     final_draft = payload.get("draft", final_draft)
                     continue
                 if payload.get("type") == "llm_usage":
@@ -109,6 +130,12 @@ async def chat(req: ChatRequest):
             REPORTS[run_id] = final_draft
             yield to_sse(Report(run_id=run_id, markdown=final_draft).model_dump())
 
+        except CostLimitReached as e:
+            message = str(e)
+            yield to_sse(Progress(node="cost_guard", message=message).model_dump())
+            final_draft = budget_partial_report(latest_state, message)
+            REPORTS[run_id] = final_draft
+            yield to_sse(Report(run_id=run_id, markdown=final_draft).model_dump())
         except GraphRecursionError:
             yield to_sse(ErrorEvent(
                 message=f"실행 단계가 상한({settings.recursion_limit})을 넘어 중단되었습니다."
@@ -121,6 +148,7 @@ async def chat(req: ChatRequest):
             total_duration_ms=int((time.perf_counter() - started) * 1000),
             **totals,
         ).model_dump())
+        reset_run_budget(budget_token)
 
     return StreamingResponse(
         event_stream(),

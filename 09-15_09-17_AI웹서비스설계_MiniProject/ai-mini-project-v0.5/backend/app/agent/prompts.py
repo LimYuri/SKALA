@@ -17,13 +17,16 @@ WRITER_SYSTEM = """당신은 SK hynix R&D 조직을 위한 기술 전략 보고�
 보고서 구성
 ## 1. 요약
 ## 2. 기술 개요
-## 3. 경쟁사별 현황 (기업별 TRL 추정과 근거)
-## 4. 시사점
-## 5. 한계와 불확실성
+## 3. 시사점
+## 4. 한계와 불확실성
 
 규칙
 - 모든 주장 뒤에 근거 자료 번호 [n]를 붙입니다.
+- 경쟁사 분석의 [n]은 해당 기업 아래에 표시된 기업별 근거 목록 번호를 사용합니다.
 - 근거가 없는 내용은 쓰지 않습니다.
+- 경쟁사별 현황은 사용자 질문이 기업 비교를 요청하고 기업별 분석 결과가 있을 때만 별도 섹션으로 추가합니다.
+- 기업별 분석 결과가 없으면 경쟁사 섹션을 만들지 않습니다.
+- 기업별 분석 결과가 미완료이면 TRL을 추정하지 말고, 미완료 사실을 명시합니다.
 """
 
 
@@ -40,4 +43,9 @@ def format_evidence(evidence: list[dict]) -> str:
 def format_findings(findings: list[dict]) -> str:
     if not findings:
         return "(경쟁사 분석 결과 없음)"
-    return "\n\n".join(f"### {f['competitor']}\n{f['analysis']}" for f in findings)
+    blocks = []
+    for finding in findings:
+        sources = format_evidence(finding.get("evidence", []))
+        status = "완료" if finding.get("available", True) else "미완료"
+        blocks.append(f"### {finding['competitor']} ({status})\n분석 결과:\n{finding['analysis']}\n\n해당 분석의 근거 자료 (번호는 이 기업 안에서만 유효):\n{sources}")
+    return "\n\n".join(blocks)
